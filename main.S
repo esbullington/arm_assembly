@@ -3,11 +3,10 @@
 .extern printf, scanf, puts
 
 .data
-    msg: .asciz "Even number"
-    otherwise: .asciz "Odd number"
+    fmt: .asciz "Loops left: %d\n"
+    loop_string: .asciz "Loop it\n"
     sfmt: .asciz "%d"
     input_val: .word 0
-    two: .word 2
 
 .text
 .global main
@@ -17,38 +16,43 @@ exit:
     mov r7, #1
     swi 0
 
-modulus:
-		@ modulus:
-		@ Precondition: R0 % R1 is the required computation
-		@ Postcondition: R0 has the result of R0 % R1
-    push    {r4, lr}
-		udiv r2, r0, r1
-		mls  r0, r1, r2, r0
-    pop     {r4, pc}
-
 main:
+
+    @ read input integer from stdin
     @ r0 is the first argument.
     @ r2 is the second, up to r3
     @ additional args go on stack
     ldr r0, =sfmt
     ldr r1, =input_val
     bl scanf
+			
+    @ set r4 and r5 to input_val addr and value
+    @ in preparation for loop
+    ldr r5, =input_val
+    ldr r4, [r5]
 
-    ldr r4, =input_val
-    ldr r5, =two
+    @ subtract out 1 
+    @ so we can use 0-indexed counting
+    sub r4, #1
+    str r4, [r5]
 
-    ldr r0, [r4] 
-		ldr r1, [r5]
-		bl modulus
+@ Start of loop.
+.loop:
 
-    cmp r0, #0
-    beq .Is_even
+    @ print current count
+    ldr r0, =fmt
+    ldr r1, [r5]
+    bl printf
+
+    @ decrement and then compare to 0
+    sub r4, #1
+    @ store in memory for next loop
+    str r4, [r5]
+
+    @ have we reached 0 yet?
+    cmp r4, #0
     
-    ldr r0, =otherwise
-    bl puts
-    b exit
-
-.Is_even:
-    ldr r0, =msg
-    bl puts
+    @ if >=0, loop again
+    bge .loop
+		
     b exit
