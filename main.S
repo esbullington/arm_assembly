@@ -28,6 +28,8 @@ modulus:
 
 main:
     @ r0 is the first argument.
+    @ r2 is the second, up to r3
+    @ additional args go on stack
     ldr r0, =sfmt
     ldr r1, =input_val
     bl scanf
@@ -40,13 +42,13 @@ main:
 		bl modulus
 
     cmp r0, #0
-    beq .Pressed_zero
+    beq .Is_even
     
     ldr r0, =otherwise
     bl puts
     b exit
 
-.Pressed_zero:
+.Is_even:
     ldr r0, =msg
     bl puts
     b exit
