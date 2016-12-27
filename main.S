@@ -27,10 +27,12 @@ main:
     bl scanf
 			
     @ set r4 and r5 to input_val addr and value
-    @ in preparation for loop
+    @ in preparation for loop ending condition
     ldr r5, =input_val
     ldr r4, [r5]
 
+    @ set r6 and r7 to "zero" data addr and value
+    @ in preparation for loop pointer/index
     ldr r7, =zero
     ldr r6, [r7]
 
@@ -50,7 +52,7 @@ main:
     @ have we reached 0 yet?
     cmp r6, r4
     
-    @ if >=0, loop again
+    @ if < input value, loop again
     blt .loop
 		
     b exit
