@@ -18,9 +18,9 @@ exit:
     swi 0
 
 modulus:
-		@ modulus:
-		@ Precondition: R0 % R1 is the required computation
-		@ Postcondition: R0 has the result of R0 % R1
+    @ modulus:
+    @ Precondition: R0 % R1 is the required computation
+    @ Postcondition: R0 has the result of R0 % R1
     push    {r4, lr}
 		udiv r2, r0, r1
 		mls  r0, r1, r2, r0
