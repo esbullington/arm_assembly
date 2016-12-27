@@ -1,11 +1,11 @@
 
 @ Make glibc symbols visible.
-.extern printf, scanf, puts
+.extern printf, scanf
 
 .data
-    fmt: .asciz "Loops left: %d\n"
-    loop_string: .asciz "Loop it\n"
+    fmt: .asciz "Count: %d\n"
     sfmt: .asciz "%d"
+    zero: .word 0
     input_val: .word 0
 
 .text
@@ -31,28 +31,26 @@ main:
     ldr r5, =input_val
     ldr r4, [r5]
 
-    @ subtract out 1 
-    @ so we can use 0-indexed counting
-    sub r4, #1
-    str r4, [r5]
+    ldr r7, =zero
+    ldr r6, [r7]
 
 @ Start of loop.
 .loop:
 
     @ print current count
     ldr r0, =fmt
-    ldr r1, [r5]
+    ldr r1, [r7]
     bl printf
 
     @ decrement and then compare to 0
-    sub r4, #1
+    add r6, #1
     @ store in memory for next loop
-    str r4, [r5]
+    str r6, [r7]
 
     @ have we reached 0 yet?
-    cmp r4, #0
+    cmp r6, r4
     
     @ if >=0, loop again
-    bge .loop
+    blt .loop
 		
     b exit
